@@ -216,7 +216,7 @@ module Taskr::Models
         xml.tag!('id', {:type => 'integer'}, id)
         xml.tag!('name', name)
         xml.tag!('value') do
-          xml.cdata!(value)
+          xml.cdata!(value.to_s)
         end
       end
     end

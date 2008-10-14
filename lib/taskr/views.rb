@@ -24,11 +24,11 @@ module Taskr::Views
     CONTENT_TYPE = 'text/xml'
     
     def tasks_list
-      @tasks.to_xml(:root => 'tasks')#, :include => [:task_actions])
+      @tasks.to_xml(:root => 'tasks', :include => [:task_actions])
     end
     
     def view_task
-      @task.to_xml(:root => 'task')#, :include => [:task_actions])
+      @task.to_xml(:root => 'task', :include => [:task_actions])
     end
   end
   
