@@ -39,10 +39,11 @@ unless Object.method_defined? :gem
   alias gem require_gem
 end
 
+gem 'picnic', '>=0.6.5'
 require 'picnic'
 require 'camping/db'
 
 require 'reststop'
 
-gem 'rufus-scheduler', '~> 1.0.7'
+gem 'rufus-scheduler', '>=1.0.7'
 require 'rufus/scheduler'

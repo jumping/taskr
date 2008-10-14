@@ -2,10 +2,13 @@
 
 * Log entries in task view can now be filtered by date. By default only entries
   from the last 24 hours are shown.
+* Added ability to reload and edit existing tasks [dvdplm]
 * Added experimental 'dont_wait' parameter to the Taskr4Rails action that 
   forces the remote code to be forked so that it does not hold up the entire 
   server. Currently this will only work if the remote Rails server is running 
-  on Mongrel. 
+  on Mongrel.
+* Taskr can be configured to send SNMP traps whenever task events are logged.
+  See the config.example.yml file's "LOGGING" section for more info.
 
 === 0.3.0 :: 2008-06-19
 

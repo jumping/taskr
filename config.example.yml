@@ -139,6 +139,19 @@ task_log:
   # ERROR, WARN, INFO, or DEBUG
   level: DEBUG
   
+### SNMP Traps
+# Taskr can be configured to send out SNMP traps whenever task events occur.
+# That is, in addition to logging task events to the Task Log (see above),
+# Taskr can send out SNMP traps notifying an SNMP listener of the event.
+# This functionality relies on the Net-SNMP package's `snmptrap` command-line
+# utility, so make sure you have the PERL Net-SNMP installed on your system
+# before enabling the following configuration options.
+
+#snmp:
+#  send_traps: true
+#  to_host: snmp.example.net
+#  community: public
+#  enterprise_oid: 1.3.6.1.4.1.55555.7007
   
 ##### MISC #####################################################################
 

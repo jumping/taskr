@@ -200,7 +200,7 @@ module Taskr::Models
     end
     
     def to_s
-      "#{self.class.name.demodulize}(#{task_action})"
+      "#{self.class.name.demodulize}(#{action_class})"
     end
   end
 
@@ -260,6 +260,51 @@ module Taskr::Models
             :task_action => action,
             :data => data
           )
+        end
+        
+        # Send SNMP traps through net-snmp if Taskr is configured to send them.
+        if Taskr::Conf[:snmp] && Taskr::Conf[:snmp][:send_traps]
+          snmp_community = Taskr::Conf[:snmp][:community]
+          enterprise_oid = Taskr::Conf[:snmp][:enterprise_oid] || '1.3.6.1.4.1.55555.7007'
+          to_host        = Taskr::Conf[:snmp][:to_host]
+          snmp_persistent_dir = Taskr::Conf[:snmp][:snmp_persistent_dir] || '/tmp'
+          my_host        = ENV['HOSTNAME'] || `hostname`.strip || 'taskr'
+          
+          # see http://www.oid-info.com/get/1.3.6.1.4.1.9.5.1.14.4.1.2
+          level_oid = '1.3.6.1.4.1.9.5.1.14.4.1.2'
+          level_typ = 'i'
+          case level
+          when 'DEBUG'  then level_val = 8
+          when 'INFO'   then level_val = 7
+          when 'WARN'   then level_val = 5
+          when 'ERROR'  then level_val = 4
+          end
+        
+          # see http://www.oid-info.com/get/1.3.6.1.4.1.9.9.41.1.2.3.1.4
+          sevr_oid = '1.3.6.1.4.1.9.9.41.1.2.3.1.4'
+          sevr_typ = 's'
+          sevr_val = level
+          
+          # TODO: make msg format configurable
+          msg = ("Taskr #{level} on task #{task}[#{action}]: #{data}").gsub(/"/, '\"')
+          
+          # see http://www.oid-info.com/get/1.3.6.1.4.1.9.9.41.1.2.3.1.5
+          msg_oid = '1.3.6.1.4.1.9.9.41.1.2.3.1.5'
+          msg_typ = 's'
+          msg_val = msg
+          
+          cmd = %{snmptrap -v 1 -c #{snmp_community} #{to_host} #{enterprise_oid} #{my_host} 6 #{level_val} '' \
+#{level_oid} #{level_typ} "#{level_val}" \
+#{sevr_oid} #{sevr_typ} "#{sevr_val}" \
+#{msg_oid} #{msg_typ} "#{msg_val}"}
+          
+          # Band-aid fix for bug in Net-SNMP.
+          # See http://sourceforge.net/tracker/index.php?func=detail&aid=1588455&group_id=12694&atid=112694
+          ENV['SNMP_PERSISTENT_DIR'] ||= snmp_persistent_dir
+          
+          $LOG.debug "SENDING SNMP TRAP: #{cmd}"
+          
+          `#{cmd}`
         end
       end
       
