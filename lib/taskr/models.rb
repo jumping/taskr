@@ -270,6 +270,12 @@ module Taskr::Models
           snmp_persistent_dir = Taskr::Conf[:snmp][:snmp_persistent_dir] || '/tmp'
           my_host        = ENV['HOSTNAME'] || `hostname`.strip || 'taskr'
           
+          
+          task_oid = '1.3.6.1.4.1.55555.7007.1'
+          task_typ = 's'
+          task_val = task.to_s.gsub(/"/, '\"')
+          
+          
           # see http://www.oid-info.com/get/1.3.6.1.4.1.9.5.1.14.4.1.2
           level_oid = '1.3.6.1.4.1.9.5.1.14.4.1.2'
           level_typ = 'i'
@@ -296,6 +302,7 @@ module Taskr::Models
           cmd = %{snmptrap -v 1 -c #{snmp_community} #{to_host} #{enterprise_oid} #{my_host} 6 #{level_val} '' \
 #{level_oid} #{level_typ} "#{level_val}" \
 #{sevr_oid} #{sevr_typ} "#{sevr_val}" \
+#{task_oid} #{task_typ} "#{task_val}" \
 #{msg_oid} #{msg_typ} "#{msg_val}"}
           
           # Band-aid fix for bug in Net-SNMP.
