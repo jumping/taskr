@@ -268,7 +268,7 @@ module Taskr
           parameters['params'] = params2
         end
         
-        options[:logger] = LogEntry.logger_for_action(task_action)
+        options = {:logger => LogEntry.logger_for_action(task_action)}
         options.merge!(auth)
         Restr.do(parameters['method'], 
           parameters['url'], 
@@ -313,7 +313,7 @@ module Taskr
           #:shell_command => parameters['shell_command']
         }
 
-        options[:logger] = LogEntry.logger_for_action(task_action)
+        options = {:logger => LogEntry.logger_for_action(task_action)}
         Restr.post(parameters['url'], data, options)
       end
     end
