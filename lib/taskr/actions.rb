@@ -268,8 +268,12 @@ module Taskr
           parameters['params'] = params2
         end
         
-        Restr.logger = LogEntry.logger_for_action(task_action)
-        Restr.do(parameters['method'], parameters['url'], (parameters['params'] unless parameters['params'].blank?), auth)
+        options[:logger] = LogEntry.logger_for_action(task_action)
+        options.merge!(auth)
+        Restr.do(parameters['method'], 
+          parameters['url'], 
+          (parameters['params'] unless parameters['params'].blank?), 
+          options)
       end
     end
     
@@ -308,10 +312,9 @@ module Taskr
           :ruby_code => parameters['ruby_code']#,
           #:shell_command => parameters['shell_command']
         }
-        
-        
-        Restr.logger = LogEntry.logger_for_action(task_action)
-        Restr.post(parameters['url'], data)
+
+        options[:logger] = LogEntry.logger_for_action(task_action)
+        Restr.post(parameters['url'], data, options)
       end
     end
   end

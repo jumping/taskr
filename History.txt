@@ -11,6 +11,8 @@
   See the config.example.yml file's "LOGGING" section for more info.
 * Task actions and parameters are now again included in the XML views for
   the task list and for individual tasks.
+* Restr 0.5.0 is now required, due to a bug in Restr 0.4.0 that caused 
+  some actions to log their info incorrectly.
 
 === 0.3.0 :: 2008-06-19
 
