@@ -269,7 +269,7 @@ module Taskr
         end
         
         options = {:logger => LogEntry.logger_for_action(task_action)}
-        options.merge!(auth)
+        options.merge!(auth) if auth
         Restr.do(parameters['method'], 
           parameters['url'], 
           (parameters['params'] unless parameters['params'].blank?), 

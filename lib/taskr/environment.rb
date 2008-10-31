@@ -15,35 +15,39 @@
 
 $: << File.dirname(File.expand_path(__FILE__))
 
-# Try to load local versions of Picnic and Reststop if possible...
-$: << File.dirname(File.expand_path(__FILE__))+"/../../../picnic/lib"
-$: << File.dirname(File.expand_path(__FILE__))+"/../../vendor/picnic/lib"
-$: << File.dirname(File.expand_path(__FILE__))+"/../../../reststop/lib"
-$: << File.dirname(File.expand_path(__FILE__))+"/../../vendor/reststop/lib"
-
-# active_resource needs newer versions of active_support, but this conflicts
-# with active_record, so we need a newer version of that as well (yes, it's a mess) 
-#$: << File.dirname(File.expand_path(__FILE__))+"/../../vendor/activeresource/lib"
-#$: << File.dirname(File.expand_path(__FILE__))+"/../../vendor/activesupport/lib"
-#$: << File.dirname(File.expand_path(__FILE__))+"/../../vendor/activerecord/lib"
+# Try to load local version of Picnic if possible (for development purposes)
+alt_picnic_paths = [
+  File.dirname(File.expand_path(__FILE__))+"/../../../picnic/lib",
+  File.dirname(File.expand_path(__FILE__))+"/../../vendor/picnic/lib"
+]
+# Try to load local version of Reststop if possible (for development purposes)
+alt_reststop_paths = [
+  File.dirname(File.expand_path(__FILE__))+"/../../../reststop/lib",
+  File.dirname(File.expand_path(__FILE__))+"/../../vendor/reststop/lib"
+]
 
 require 'rubygems'
-
-require 'active_support'
-#require 'active_resource'
-require 'active_record'
-
 
 # make things backwards-compatible for rubygems < 0.9.0
 unless Object.method_defined? :gem
   alias gem require_gem
 end
 
-gem 'picnic', '>=0.6.5'
+if alt_picnic_paths.any?{|path| File.exists? "#{path}/picnic.rb" }
+  alt_picnic_paths.each{|path| $: << path}
+end
 require 'picnic'
-require 'camping/db'
+
+if alt_reststop_paths.any?{|path| File.exists? "#{path}/reststop.rb" }
+  alt_reststop_paths.each{|path| $: << path}
+end
 
 require 'reststop'
+
+require 'active_record'
+require 'active_support'
+
+require 'camping/db'
 
 gem 'rufus-scheduler', '>=1.0.7'
 require 'rufus/scheduler'

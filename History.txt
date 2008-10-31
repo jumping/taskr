@@ -13,6 +13,7 @@
   the task list and for individual tasks.
 * Restr 0.5.0 is now required, due to a bug in Restr 0.4.0 that caused 
   some actions to log their activities incorrectly.
+* Picnic 0.7.0 is now required, due to changes in environment configuration.
 
 === 0.3.0 :: 2008-06-19
 
