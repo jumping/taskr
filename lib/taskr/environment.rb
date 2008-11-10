@@ -29,7 +29,7 @@ alt_reststop_paths = [
 require 'rubygems'
 
 # make things backwards-compatible for rubygems < 0.9.0
-unless Object.method_defined? :gem
+if Object.method_defined?(:require_gem)
   alias gem require_gem
 end
 
