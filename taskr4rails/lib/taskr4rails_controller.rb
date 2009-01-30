@@ -1,5 +1,7 @@
 class Taskr4railsController < ActionController::Base
   
+  session :off
+  
   def execute
     unless Object.const_defined?("TASKR4RAILS_AUTH")
       render :text => "The taskr4rails receiver cannot be used until TASKR4RAILS_AUTH is defined. See http://code.google.com/p/ruby-taskr/wiki/Taskr4rails for help.", 
