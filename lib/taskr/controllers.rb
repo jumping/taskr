@@ -23,9 +23,27 @@ module Taskr::Controllers
     end
   end
   
+  
+  # FIXME: until I figure out how to serve static fils with camping2 + rack
+  class Stylesheet < R '/public/taskr.css'
+    def get
+      headers['Content-Type'] = 'text/css'
+      File.read("#{$APP_ROOT}/lib/public/taskr.css")
+    end
+  end
+  
+  # FIXME: until I figure out how to serve static fils with camping2 + rack
+  class Javascript < R '/public/prototype.js'
+    def get
+      headers['Content-Type'] = 'text/javascript'
+      File.read("#{$APP_ROOT}/lib/public/prototype.js")
+    end
+  end
+  
+  
   class Actions < REST 'actions'
     def parameters_form(id)
-      @num = @input[:num] || 0
+      @num = input['num'] || 0
       @action = Taskr::Actions.list.find {|a| a.to_s =~ Regexp.new("#{id}$")}
       if @action
         render :action_parameters_form
@@ -36,7 +54,7 @@ module Taskr::Controllers
     end
     
     def new
-      @num = @input[:num] || 0
+      @num = input['num'] || 0
       @actions = Taskr::Actions.list
       render :action_form
     end
@@ -82,7 +100,7 @@ module Taskr::Controllers
         :schedule_when    => params[:schedule_when],
         :memo             => params[:memo]
       }
-
+      
       @task.task_actions.each do |action|
         $LOG.debug("Updating parameters for #{action.inspect}")
         action_params = params[:action].delete("action_id_#{action.id}")
@@ -128,7 +146,7 @@ module Taskr::Controllers
     end
     
     def normalize_input(hsh)
-      hsh[:task] || hsh["0"] || hsh
+      hsh['task'] || hsh["0"] || hsh
     end
     
     def normalize_actions_params(input_params)
@@ -179,7 +197,7 @@ module Taskr::Controllers
       $LOG.debug @input.inspect
       begin
         # the "0" is for compatibility with PHP's Zend_Rest_Client
-        task_data = @input[:task] || @input["0"] || @input
+        task_data = @input['task'] || @input["0"] || @input
           
         name            = task_data[:name]
         created_by      = @env['REMOTE_HOST']
@@ -322,14 +340,14 @@ module Taskr::Controllers
   
   class LogEntries < REST 'log_entries'
     def list
-      @since = @input[:since]
+      @since = input['since']
       
       @level = ['DEBUG', 'INFO', 'WARN', 'ERROR']
-      @level.index(@input[:level]).times {@level.shift} if @input[:level]
+      @level.index(input['level']).times {@level.shift} if input['level']
       
       @log_entries = LogEntry.find(:all, 
         :conditions => ['task_id = ? AND IF(?,timestamp > ?,1) AND level IN (?)', 
-                        @input[:task_id], !@since.blank?, @since, @level],
+                        input['task_id'], !@since.blank?, @since, @level],
         :order => 'timestamp DESC, id DESC')
       
       render :log_entries_list

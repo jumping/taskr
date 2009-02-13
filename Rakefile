@@ -20,8 +20,8 @@ HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
 
 
 NAME = "taskr"
-#REV = nil
-REV = YAML.load(`svn info`)['Revision']
+REV = Time.now.strftime('%Y%m%d%H%M')
+#REV = YAML.load(`svn info`)['Revision']
 VERS = ENV['VERSION'] || (Taskr::VERSION::STRING + (REV ? ".#{REV}" : ""))
                           CLEAN.include ['**/.*.sw?', '*.gem', '.config']
 RDOC_OPTS = ['--quiet', '--title', "taskr documentation",
@@ -54,7 +54,7 @@ hoe = Hoe.new(GEM_NAME, VERS) do |p|
   #p.spec_extras    - A hash of extra values to set in the gemspec.
   
   p.extra_deps = [
-    ['picnic', '~> 0.7.0'], 
+    ['picnic', '~> 0.7.999'], 
     ['reststop', '~> 0.3.0'], 
     ['restr', '~> 0.5.0'], 
     ['rufus-scheduler', '~> 1.0.7']

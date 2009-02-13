@@ -417,33 +417,35 @@ module Taskr::Views
     end
    
     def log_entries_list
-      h2 "Log"
-      
-      p(:style => 'margin: 0px') do
-        em(:style => "font-weight: normal; font-size: 9pt"){"Entries since #{@since}<br />"} unless @since.blank?
-        em(:style => "font-weight: normal; font-size: 9pt"){"With levels #{@level.join(", ")}<br />"} unless @level.blank?
-      end
-            
-      table do
-        @log_entries.each do |entry|
-          case entry.level.downcase.intern
-          when :error
-            bg_color = '#faa'
-          when :warn
-            bg_color = '#ffa'
-          when :info
-            bg_color = '#aaf'
-          when :debug
-            bg_color = '#eee'
-          else
-            bg_color = '#fff; '+entry.level.inspect
-          end
-          tr do
-            td(:style => "vertical-align: top; font-size: 9pt; white-space: nowrap; background: #{bg_color}") do
-              entry.timestamp
+      html_scaffold do
+        h2 "Log"
+        
+        p(:style => 'margin: 0px') do
+          em(:style => "font-weight: normal; font-size: 9pt"){"Entries since #{@since}<br />"} unless @since.blank?
+          em(:style => "font-weight: normal; font-size: 9pt"){"With levels #{@level.join(", ")}<br />"} unless @level.blank?
+        end
+              
+        table do
+          @log_entries.each do |entry|
+            case entry.level.downcase.intern
+            when :error
+              bg_color = '#faa'
+            when :warn
+              bg_color = '#ffa'
+            when :info
+              bg_color = '#aaf'
+            when :debug
+              bg_color = '#eee'
+            else
+              bg_color = '#fff; '+entry.level.inspect
             end
-            td(:style => "vertical-align: top; font-size: 9pt; background-color: #{bg_color}; font-size: 9pt; font-family: monospace") do
-              entry.data.gsub(/<\/?(html|body)>/, '').gsub(/\n/, "<br />")
+            tr do
+              td(:style => "vertical-align: top; font-size: 9pt; white-space: nowrap; background: #{bg_color}") do
+                entry.timestamp
+              end
+              td(:style => "vertical-align: top; font-size: 9pt; background-color: #{bg_color}; font-size: 9pt; font-family: monospace") do
+                entry.data.gsub(/<\/?(html|body)>/, '').gsub(/\n/, "<br />")
+              end
             end
           end
         end

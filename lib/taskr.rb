@@ -13,13 +13,72 @@
 # You should have received a copy of the GNU General Public License
 # along with Taskr.  If not, see <http://www.gnu.org/licenses/>.
 
+
+unless Object.const_defined?(:Picnic)
+  $APP_NAME ||= 'taskr'
+  $APP_ROOT ||= File.expand_path(File.dirname(__FILE__)+'/..')
+  
+  if File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../vendor/picnic/lib'))
+    $: << picnic
+  elsif File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../../picnic/lib'))
+    $: << picnic
+  else
+    require 'rubygems'
+    
+    # make things backwards-compatible for rubygems < 0.9.0
+    if respond_to?(:require_gem)
+      puts "WARNING: aliasing gem to require_gem in #{__FILE__} -- you should update your RubyGems system!"
+      alias gem require_gem
+    end
+   
+    gem 'picnic'
+  end
+  
+  require 'picnic'
+end
+
+unless $CONF
+  unless $APP_NAME && $APP_ROOT
+    raise "Can't load the RubyCAS-Server configuration because $APP_NAME and/or $APP_ROOT are not defined."
+  end
+
+  require 'picnic/conf'
+  $CONF = Picnic::Conf.new
+  $CONF.load_from_file($APP_NAME, $APP_ROOT)
+end
+
+require 'yaml'
+require 'markaby'
+require 'picnic/logger'
+require 'picnic/authentication'
+
+if File.exists?(reststop = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../vendor/reststop/lib'))
+  $: << reststop
+elsif File.exists?(reststop = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../../reststop/lib'))
+  $: << reststop
+else
+  require 'rubygems'
+  
+  # make things backwards-compatible for rubygems < 0.9.0
+  if respond_to?(:require_gem)
+    puts "WARNING: aliasing gem to require_gem in #{__FILE__} -- you should update your RubyGems system!"
+    alias gem require_gem
+  end
+ 
+  gem 'reststop'
+end
+
+require 'reststop'
+
+
+gem 'rufus-scheduler', '>=1.0.7'
+require 'rufus/scheduler'
+
 $: << File.dirname(File.expand_path(__FILE__))
-require 'taskr/environment'
 
 Camping.goes :Taskr
-Taskr.picnic!
 
-require 'taskr/controllers'
+Picnic::Logger.init_global_logger!
 
 module Taskr
   @@scheduler = nil
@@ -39,17 +98,18 @@ require 'taskr/controllers'
 
 module Taskr
   include Taskr::Models
+  include Picnic::Authentication
   
   def self.authenticate(credentials)
-    credentials[:username] == Taskr::Conf[:authentication][:username] &&
-      credentials[:password] == Taskr::Conf[:authentication][:password]
+    credentials[:username] == $CONF[:authentication][:username] &&
+      credentials[:password] == $CONF[:authentication][:password]
   end
 end
 
 include Taskr::Models
 
-if Taskr::Conf[:authentication]
-  Taskr.authenticate_using(Taskr::Conf[:authentication][:method] || :basic)
+if $CONF[:authentication]
+  Taskr.authenticate_using($CONF[:authentication][:method] || :basic)
 end
 
 $CONF[:public_dir] = {
@@ -59,23 +119,8 @@ $CONF[:public_dir] = {
 
 def Taskr.create
   $LOG.info "Initializing Taskr..."
-  Taskr::Models::Base.establish_connection(Taskr::Conf.database)
-  Taskr::Models.create_schema
+  Taskr::Models::Base.establish_connection($CONF.database)
   
-  if self::Conf[:external_actions]
-    if self::Conf[:external_actions].kind_of? Array
-      external_actions = self::Conf[:external_actions]
-    else
-      external_actions = [self::Conf[:external_actions]]
-    end
-    external_actions.each do |f|
-      $LOG.info "Loading additional action definitions from #{self::Conf[:external_actions]}..."
-      require f
-    end
-  end
-end
-
-def Taskr.prestart
   $LOG.info "Starting Rufus Scheduler..."
   
   Taskr.scheduler = Rufus::Scheduler.new
@@ -92,6 +137,24 @@ def Taskr.prestart
   end
   
   Taskr.scheduler.instance_variable_get(:@scheduler_thread).run
+  
+  
+  Taskr::Models.create_schema
+  
+  if $CONF[:external_actions]
+    if $CONF[:external_actions].kind_of? Array
+      external_actions = $CONF[:external_actions]
+    else
+      external_actions = [$CONF[:external_actions]]
+    end
+    external_actions.each do |f|
+      $LOG.info "Loading additional action definitions from #{$CONF[:external_actions]}..."
+      require f
+    end
+  end
 end
 
-Taskr.start_picnic
+def Taskr.prestart
+  
+end
+

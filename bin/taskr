@@ -23,13 +23,21 @@ elsif File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FIL
   $: << picnic
 else
   require 'rubygems'
+  
+  # make things backwards-compatible for rubygems < 0.9.0
+  if respond_to?(:require_gem)
+    puts "WARNING: aliasing gem to require_gem in #{__FILE__} -- you should update your RubyGems system!"
+    alias gem require_gem
+  end
+ 
+  gem 'picnic'
 end
 
 require 'picnic/cli'
 
 cli = Picnic::Cli.new(
   'taskr',
-  :app_path => File.expand_path(File.dirname(File.expand_path(__FILE__)))
+  :app_file => File.expand_path(File.dirname(File.expand_path($0))+"/../lib/taskr.rb")
 )
 
 cli.handle_cli_input

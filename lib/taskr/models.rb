@@ -13,7 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Taskr.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'camping/db'
 require 'openwfe/util/scheduler'
 require 'date'
 
@@ -249,7 +248,7 @@ module Taskr::Models
           raise ArgumentError, "#{action_or_task.inspect} is not a valid Task or TaskAction!"
         end
         
-        threshold = Taskr::Conf[:task_log][:level].upcase if Taskr::Conf[:task_log] && Taskr::Conf[:task_log][:level]
+        threshold = $CONF[:task_log][:level].upcase if $CONF[:task_log] && $CONF[:task_log][:level]
         
         if threshold.blank? || 
             ['DEBUG', 'INFO', 'WARN', 'ERROR'].index(threshold) <= ['DEBUG', 'INFO', 'WARN', 'ERROR'].index(level) 
@@ -263,7 +262,7 @@ module Taskr::Models
         end
         
         # Send SNMP traps through net-snmp if Taskr is configured to send them.
-        if Taskr::Conf[:snmp] && Taskr::Conf[:snmp][:send_traps]
+        if $CONF[:snmp] && $CONF[:snmp][:send_traps]
           send_snmp_trap(level, task, action, data)
         end
       end
@@ -282,10 +281,10 @@ module Taskr::Models
       end
       
       def send_snmp_trap(level, task, action, data)
-        snmp_community = Taskr::Conf[:snmp][:community]
-        enterprise_oid = Taskr::Conf[:snmp][:enterprise_oid] || '1.3.6.1.4.1.55555.7007'
-        to_host        = Taskr::Conf[:snmp][:to_host]
-        snmp_persistent_dir = Taskr::Conf[:snmp][:snmp_persistent_dir] || '/tmp'
+        snmp_community = $CONF[:snmp][:community]
+        enterprise_oid = $CONF[:snmp][:enterprise_oid] || '1.3.6.1.4.1.55555.7007'
+        to_host        = $CONF[:snmp][:to_host]
+        snmp_persistent_dir = $CONF[:snmp][:snmp_persistent_dir] || '/tmp'
         my_host        = ENV['HOSTNAME'] || `hostname`.strip || 'taskr'
         
         
