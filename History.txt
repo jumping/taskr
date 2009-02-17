@@ -2,6 +2,8 @@
 
 * Changes throughout for compatibility with Picnic 0.8
 * Now requires Picnic 0.8.0 or newer
+* Changed scheduler requirement from 'openwfe' to 'rufus' (openwfe has been
+  renamed upstream).
 
 === 0.4.0 :: 2008-12-23
 

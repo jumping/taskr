@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Taskr.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'openwfe/util/scheduler'
+require 'rufus/scheduler'
 require 'date'
 
 class Rufus::Scheduler
