@@ -1,9 +1,11 @@
 === In Progress...
 
-* Changes throughout for compatibility with Picnic 0.8
-* Now requires Picnic 0.8.0 or newer
-* Changed scheduler requirement from 'openwfe' to 'rufus' (openwfe has been
-  renamed upstream).
+* Now uses Rack and Camping 2.0 and is compatible with Phusion Passenger
+  -- this is thanks to an upgrade to Picnic 0.8.0 (Picnic 0.8.0 or higher 
+  is now a gem requirement).
+* Changed scheduler requirement from 'openwfe' to 'rufus' (OpenWFE was
+  renamed to Rufus).
+* GET requests to / are now automatically redirected to /tasks.
 
 === 0.4.0 :: 2008-12-23
 

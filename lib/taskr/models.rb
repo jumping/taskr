@@ -303,6 +303,11 @@ module Taskr::Models
         when 'ERROR'  then level_val = 4
         end
       
+        # see http://www.oid-info.com/get/2.9.2.11.7.1
+        #repeat_oid = '2.9.2.11.7.1'
+        #repeat_typ = 'i'
+        #repeat_val = repeat_count
+      
         # see http://www.oid-info.com/get/1.3.6.1.4.1.9.9.41.1.2.3.1.4
         sevr_oid = '1.3.6.1.4.1.9.9.41.1.2.3.1.4'
         sevr_typ = 's'

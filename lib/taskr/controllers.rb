@@ -23,23 +23,11 @@ module Taskr::Controllers
     end
   end
   
-  
-  # FIXME: until I figure out how to serve static fils with camping2 + rack
-  class Stylesheet < R '/public/taskr.css'
+  class Default < R '/'
     def get
-      headers['Content-Type'] = 'text/css'
-      File.read("#{$APP_ROOT}/lib/public/taskr.css")
+      redirect Tasks
     end
   end
-  
-  # FIXME: until I figure out how to serve static fils with camping2 + rack
-  class Javascript < R '/public/prototype.js'
-    def get
-      headers['Content-Type'] = 'text/javascript'
-      File.read("#{$APP_ROOT}/lib/public/prototype.js")
-    end
-  end
-  
   
   class Actions < REST 'actions'
     def parameters_form(id)

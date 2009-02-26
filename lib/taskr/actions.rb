@@ -167,6 +167,10 @@ module Taskr
       end
     end
     
+#    class SSH < Base
+#      self.parameters = ['command', 'hostname', 'username']
+#    end
+    
     class Ruby < Base
       self.parameters = ['code']
       self.description = "Execute some Ruby code."

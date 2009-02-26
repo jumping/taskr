@@ -13,68 +13,14 @@
 # You should have received a copy of the GNU General Public License
 # along with Taskr.  If not, see <http://www.gnu.org/licenses/>.
 
+$APP_NAME ||= 'taskr'
+$APP_ROOT ||= File.expand_path(File.dirname(__FILE__)+'/..')
 
-unless Object.const_defined?(:Picnic)
-  $APP_NAME ||= 'taskr'
-  $APP_ROOT ||= File.expand_path(File.dirname(__FILE__)+'/..')
-  
-  if File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../vendor/picnic/lib'))
-    $: << picnic
-  elsif File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../../picnic/lib'))
-    $: << picnic
-  else
-    require 'rubygems'
-    
-    # make things backwards-compatible for rubygems < 0.9.0
-    if respond_to?(:require_gem)
-      puts "WARNING: aliasing gem to require_gem in #{__FILE__} -- you should update your RubyGems system!"
-      alias gem require_gem
-    end
-   
-    gem 'picnic'
-  end
-  
-  require 'picnic'
-end
+$: << $APP_ROOT+"/lib"
 
-unless $CONF
-  unless $APP_NAME && $APP_ROOT
-    raise "Can't load the RubyCAS-Server configuration because $APP_NAME and/or $APP_ROOT are not defined."
-  end
+require 'taskr/prep'
 
-  require 'picnic/conf'
-  $CONF = Picnic::Conf.new
-  $CONF.load_from_file($APP_NAME, $APP_ROOT)
-end
-
-require 'yaml'
-require 'markaby'
-require 'picnic/logger'
-require 'picnic/authentication'
-
-if File.exists?(reststop = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../vendor/reststop/lib'))
-  $: << reststop
-elsif File.exists?(reststop = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../../reststop/lib'))
-  $: << reststop
-else
-  require 'rubygems'
-  
-  # make things backwards-compatible for rubygems < 0.9.0
-  if respond_to?(:require_gem)
-    puts "WARNING: aliasing gem to require_gem in #{__FILE__} -- you should update your RubyGems system!"
-    alias gem require_gem
-  end
- 
-  gem 'reststop'
-end
-
-require 'reststop'
-
-
-gem 'rufus-scheduler', '>=1.0.7'
-require 'rufus/scheduler'
-
-$: << File.dirname(File.expand_path(__FILE__))
+# Initialize Taskr
 
 Camping.goes :Taskr
 
@@ -106,16 +52,10 @@ module Taskr
   end
 end
 
-include Taskr::Models
-
 if $CONF[:authentication]
   Taskr.authenticate_using($CONF[:authentication][:method] || :basic)
 end
 
-$CONF[:public_dir] = {
-  :path => "public",
-  :dir  => File.join(File.expand_path(File.dirname(__FILE__)),"public")
-}
 
 def Taskr.create
   $LOG.info "Initializing Taskr..."
@@ -152,9 +92,5 @@ def Taskr.create
       require f
     end
   end
-end
-
-def Taskr.prestart
-  
 end
 
