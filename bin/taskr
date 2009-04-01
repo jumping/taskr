@@ -37,7 +37,7 @@ require 'picnic/cli'
 
 cli = Picnic::Cli.new(
   'taskr',
-  :app_file => File.expand_path(File.dirname(File.expand_path($0))+"/../lib/taskr.rb")
+  :app_file => File.expand_path(File.dirname(File.expand_path(__FILE__))+"/../lib/taskr.rb")
 )
 
 cli.handle_cli_input
