@@ -26,7 +26,6 @@ end
 
 module Taskr
   module Actions
-    
     def self.list
       actions = []
       Taskr::Actions.constants.each do |m| 
@@ -40,6 +39,7 @@ module Taskr
     # Extend this to define your own custom Action.
     class Base
       include Rufus::Schedulable
+      include Taskr::Models
       
       class_inheritable_accessor :parameters
       class_inheritable_accessor :description

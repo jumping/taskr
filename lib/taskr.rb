@@ -61,6 +61,18 @@ def Taskr.create
   $LOG.info "Initializing Taskr..."
   Taskr::Models::Base.establish_connection($CONF.database)
   
+  if $CONF[:external_actions]
+    if $CONF[:external_actions].kind_of? Array
+      external_actions = $CONF[:external_actions]
+    else
+      external_actions = [$CONF[:external_actions]]
+    end
+    external_actions.each do |f|
+      $LOG.info "Loading additional action definitions from #{$CONF[:external_actions]}..."
+      require f
+    end
+  end
+
   $LOG.info "Starting Rufus Scheduler..."
   
   Taskr.scheduler = Rufus::Scheduler.new
@@ -80,17 +92,5 @@ def Taskr.create
   
   
   Taskr::Models.create_schema
-  
-  if $CONF[:external_actions]
-    if $CONF[:external_actions].kind_of? Array
-      external_actions = $CONF[:external_actions]
-    else
-      external_actions = [$CONF[:external_actions]]
-    end
-    external_actions.each do |f|
-      $LOG.info "Loading additional action definitions from #{$CONF[:external_actions]}..."
-      require f
-    end
-  end
 end
 

@@ -326,11 +326,14 @@ module Taskr::Views
         
         p(:style => "margin-top: 20px; border-top: 1px dotted black; padding-top: 10px", :id => 'logfilter') do
           strong "Show: "
-          a(:href => R(LogEntries, :list, :task_id => @task.id, :since => (Time.now - 1.day).to_formatted_s(:db)),
-            :target => 'log', :onclick => "clickbold(this)", :style => 'font-weight: bold') {"Last 24 Hours"}
+          a(:href => R(LogEntries, :list, :task_id => @task.id, :since => (Time.now - 1.hour).to_formatted_s(:db)),
+            :target => 'log', :onclick => "clickbold(this)", :style => 'font-weight: bold') {"Last 1 Hour"}
           text "|"
-          a(:href => R(LogEntries, :list, :task_id => @task.id, :since => (Time.now - 2.days).to_formatted_s(:db)),
-            :target => 'log', :onclick => "clickbold(this)") {"48 Hours"}
+          a(:href => R(LogEntries, :list, :task_id => @task.id, :since => (Time.now - 1.day).to_formatted_s(:db)),
+            :target => 'log', :onclick => "clickbold(this)", :style => 'font-weight: bold') {"24 Hours"}
+          text "|"
+          a(:href => R(LogEntries, :list, :task_id => @task.id, :since => (Time.now - 7.days).to_formatted_s(:db)),
+            :target => 'log', :onclick => "clickbold(this)") {"7 days"}
           text "|"
           a(:href => R(LogEntries, :list, :task_id => @task.id),
             :target => 'log', :onclick => "clickbold(this)") {"All"}
@@ -349,7 +352,7 @@ module Taskr::Views
           a(:href => R(LogEntries, :list, :task_id => @task.id, :level => 'ERROR'),
             :target => 'log', :onclick => "clickbold(this)") {"ERROR"}
         end        
-        iframe(:src => R(LogEntries, :list, :task_id => @task.id, :since => (Time.now - 1.day).to_formatted_s(:db)), 
+        iframe(:src => R(LogEntries, :list, :task_id => @task.id, :since => (Time.now - 1.hour).to_formatted_s(:db)),
                 :style => 'width: 100%; height: 300px', :name => 'log')
       end
     end

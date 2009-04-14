@@ -436,4 +436,11 @@ module Taskr::Models
       remove_column :taskr_tasks, :memo
     end
   end
+
+  class AddIndiciesToLogEntries < V 0.5
+    def self.up
+      add_index :taskr_log_entries, :timestamp
+      add_index :taskr_log_entries, :level
+    end
+  end
 end
