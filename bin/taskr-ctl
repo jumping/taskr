@@ -17,13 +17,7 @@
 # along with Taskr.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------------------------------------------
 
-if File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../vendor/picnic/lib'))
-  $: << picnic
-elsif File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../../picnic/lib'))
-  $: << picnic
-else
-  require 'rubygems'
-end
+require File.expand_path(File.dirname(__FILE__)+"/../lib/casserver/load_picnic")
 
 require 'picnic/service_control'
 

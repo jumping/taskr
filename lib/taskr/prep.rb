@@ -13,43 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Taskr.  If not, see <http://www.gnu.org/licenses/>.
 
-# Load Picnic
-unless Object.const_defined?(:Picnic)
-  if File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../../vendor/picnic/lib'))
-    $: << picnic
-  elsif File.exists?(picnic = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../../../picnic/lib'))
-    $: << picnic
-  else
-    require 'rubygems'
-    
-    # make things backwards-compatible for rubygems < 0.9.0
-    if respond_to?(:require_gem)
-      puts "WARNING: aliasing 'gem' to 'require_gem' in #{__FILE__} -- you should update your RubyGems system!"
-      alias gem require_gem
-    end
-   
-    gem 'picnic'
-  end
-  
-  require 'picnic'
-end
-
-# Load Reststop
-if File.exists?(reststop = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../../vendor/reststop/lib'))
-  $: << reststop
-elsif File.exists?(reststop = File.expand_path(File.dirname(File.expand_path(__FILE__))+'/../../../reststop/lib'))
-  $: << reststop
-else
-  require 'rubygems'
-  
-  # make things backwards-compatible for rubygems < 0.9.0
-  if respond_to?(:require_gem)
-    puts "WARNING: aliasing gem to require_gem in #{__FILE__} -- you should update your RubyGems system!"
-    alias gem require_gem
-  end
- 
-  gem 'reststop'
-end
+require 'taskr/load_picnic'
+require 'taskr/load_reststop'
 
 require 'reststop'
 
