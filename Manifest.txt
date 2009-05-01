@@ -13,6 +13,8 @@ lib/taskr.rb
 lib/taskr/actions.rb
 lib/taskr/controllers.rb
 lib/taskr/helpers.rb
+lib/taskr/load_picnic.rb
+lib/taskr/load_reststop.rb
 lib/taskr/models.rb
 lib/taskr/prep.rb
 lib/taskr/version.rb

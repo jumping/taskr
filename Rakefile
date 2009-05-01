@@ -54,7 +54,7 @@ hoe = Hoe.new(GEM_NAME, VERS) do |p|
   #p.spec_extras    - A hash of extra values to set in the gemspec.
   
   p.extra_deps = [
-    ['picnic', '~> 0.8.0'], 
+    ['picnic', '~> 0.8.1'], 
     ['reststop', '~> 0.4.0'], 
     ['restr', '~> 0.5.0'], 
     ['rufus-scheduler', '~> 1.0.7']
