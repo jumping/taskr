@@ -17,7 +17,7 @@
 # along with Taskr.  If not, see <http://www.gnu.org/licenses/>.
 # ---------------------------------------------------------------------
 
-require File.expand_path(File.dirname(__FILE__)+"/../lib/casserver/load_picnic")
+require File.expand_path(File.dirname(__FILE__)+"/../lib/taskr/load_picnic")
 
 require 'picnic/service_control'
 
