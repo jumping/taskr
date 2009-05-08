@@ -79,9 +79,9 @@ module Taskr::Controllers
     end
     
     def update(task_id)
-      $LOG.debug "Update Input params: #{@input.inspect}"
+      $LOG.debug "Update Input params: #{input.inspect}"
       @task = Task.find(task_id, :include => [:task_actions])
-      params = normalize_input(@input)
+      params = normalize_input(input)
       @task.attributes= {
         :name             => params[:name],
         :schedule_method  => params[:schedule_method],
@@ -134,7 +134,7 @@ module Taskr::Controllers
     end
     
     def normalize_input(hsh)
-      hsh['task'] || hsh["0"] || hsh
+      HashWithIndifferentAccess.new(hsh['task'] || hsh["0"] || hsh)
     end
     
     def normalize_actions_params(input_params)
@@ -182,10 +182,10 @@ module Taskr::Controllers
     
     # Create and schedule a new task.
     def create
-      $LOG.debug @input.inspect
+      $LOG.debug input.inspect
       begin
         # the "0" is for compatibility with PHP's Zend_Rest_Client
-        task_data = @input['task'] || @input["0"] || @input
+        task_data = HashWithIndifferentAccess.new(input['task'] || input["0"] || input)
           
         name            = task_data[:name]
         created_by      = @env['REMOTE_HOST']
@@ -275,7 +275,7 @@ module Taskr::Controllers
       end
     end
 
-    def run(id)
+    def run(id, *args)
       @task = Task.find(id, :include => [:task_actions])
       
       action = @task.prepare_action
