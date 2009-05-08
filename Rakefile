@@ -55,7 +55,7 @@ hoe = Hoe.new(GEM_NAME, VERS) do |p|
   
   p.extra_deps = [
     ['picnic', '~> 0.8.1'], 
-    ['reststop', '~> 0.4.0'], 
+    ['reststop', '~> 0.4.1'],
     ['restr', '~> 0.5.0'], 
     ['rufus-scheduler', '~> 1.0.7']
   ]
