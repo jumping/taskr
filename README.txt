@@ -1,11 +1,14 @@
 = Taskr
 
 Taskr is a stand-alone HTTP daemon, providing a cron-like networked scheduling 
-service. Tasks are created and managed via a REST calls over HTTP, allowing 
+service. Tasks are created and managed via a RESTful API over HTTP, allowing 
 other REST-aware services to schedule and manage jobs.
 
+For more information on REST (Representational State Transfer), see:
 
-Please see Taskr's Google Code site for further information:
+http://en.wikipedia.org/wiki/Representational_State_Transfer
+
+For more information on Taskr, see the project's Google Code page:
 
 http://code.google.com/p/ruby-taskr/
 
